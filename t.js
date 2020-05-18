@@ -1,12 +1,24 @@
 
 function myFunction() {
   //var my_json = JSON.stringify(document.getElementById("originalForm").innerHTML);
-  var my_json = document.getElementById("originalForm").innerHTML;
-  console.log(my_json);
+  var form_html = document.getElementById("originalForm").innerHTML;
+
+  console.log(form_html);
+
+  var elements = document.getElementById("originalForm").elements;
+  var obj ={};
+  for(var i = 0 ; i < elements.length ; i++){
+    var item = elements.item(i);
+:w
+    obj[item.name] = elements[i ;
+  }
+
+  var form_data = JSON.stringify(obj);
+  console.log(obj);
 
   var filename = "stage1.txt";
 
-  download(filename, my_json);
+  download(filename, form_data);
   alert("The form was submitted to a file", filename);
 }
 

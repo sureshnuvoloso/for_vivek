@@ -1,20 +1,28 @@
 
-function myFunction() {
-  //var my_json = JSON.stringify(document.getElementById("originalForm").innerHTML);
-  var form_html = document.getElementById("originalForm").innerHTML;
-
-  console.log(form_html);
+function conv_to_json_and_write() {
 
   var elements = document.getElementById("originalForm").elements;
   var obj ={};
-  for(var i = 0 ; i < elements.length ; i++){
+  for(var i = 0 ; i < elements.length ; i++)
+  {
     var item = elements.item(i);
-:w
-    obj[item.name] = elements[i ;
+
+    //skip submit buttons
+    if (item.type == "submit")
+      continue;
+
+    //if a checkbox get checked instead of value
+    if (item.type == "checkbox")
+    {
+      obj[item.name] = item.checked;
+      continue;
+    }
+    obj[item.name] = item.value;
   }
 
-  var form_data = JSON.stringify(obj);
   console.log(obj);
+
+  var form_data = JSON.stringify(obj);
 
   var filename = "stage1.txt";
 
@@ -37,37 +45,29 @@ function download(filename, text) {
 }
 
 window.onload = function(e) {
-  /*
-  var checkbox = document.createElement('input');
-  checkbox.type = "checkbox";
-  checkbox.name = "name";
-  checkbox.value = "value";
-  checkbox.id = "id";
 
-  var label = document.createElement('label')
-  label.htmlFor = "id";
-  label.appendChild(document.createTextNode('text for label after checkbox'));
-
-  document.body.appendChild(checkbox);
-  document.body.appendChild(label);
-  */
-
-  var my_json = JSON.stringify(document.getElementById("originalForm").innerHTML);
-  console.log(my_json);
-  var inner_html = document.getElementById("originalForm").innerHTML;
-  console.log(inner_html);
-
-  document.getElementById("originalForm").onsubmit = myFunction;
+  document.getElementById("originalForm").onsubmit = conv_to_json_and_write;
 };
 
+window.addEventListener('beforeunload', function (e) {
+  e.preventDefault();
+  e.returnValue = '';
+});
+
 window.onbeforeunload = function(e) {
-  /*
-  var my_json = JSON.stringify(document.getElementById("originalForm").innerHTML);
-  console.log(my_json);
 
-  var filename = "hello.txt";
-
-  download(filename, my_json);
-  */
+  // TODO This doesnt work !!
+  // basically i onbeforeunload doesnt seem to get called 
+  // when i close the webpage
+  // find the right event and move this code
+  //
+  // the previous addeventlistener seems to work
+  // at least it prevents closing of the window
+  // user can manually save the file
+  // -suresh
+  if (confirm("Do you want to save the data to a file?"))
+  {
+    conv_to_json_and_write();
+  }
 }
 
